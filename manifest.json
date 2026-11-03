@@ -20,7 +20,12 @@
       "formats": [
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=netzkino.de&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=netzkino.de&sz=128",
+      "testCase": {
+        "tmdb": "43479",
+        "type": "movie",
+        "title": "Off Limits – Wir sind das Gesetz"
+      }
     },
     {
       "id": "ard",
@@ -39,7 +44,14 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=ardmediathek.de&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=ardmediathek.de&sz=128",
+      "testCase": {
+        "tmdb": "66980",
+        "type": "tv",
+        "season": 1,
+        "episode": 1,
+        "title": "Babylon Berlin"
+      }
     },
     {
       "id": "plutotv",
@@ -57,7 +69,12 @@
       "formats": [
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=pluto.tv&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=pluto.tv&sz=128",
+      "testCase": {
+        "tmdb": "12253",
+        "type": "movie",
+        "title": "Biker Boyz"
+      }
     },
     {
       "id": "arte",
@@ -75,7 +92,12 @@
       "formats": [
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=arte.tv&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=arte.tv&sz=128",
+      "testCase": {
+        "tmdb": "2649",
+        "type": "movie",
+        "title": "The Game"
+      }
     },
     {
       "id": "filmfrei24",
@@ -94,7 +116,12 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=filmfrei24.com&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=filmfrei24.com&sz=128",
+      "testCase": {
+        "tmdb": "603",
+        "type": "movie",
+        "title": "Matrix"
+      }
     },
     {
       "id": "filmo",
@@ -112,7 +139,12 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=filmo.to&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=filmo.to&sz=128",
+      "testCase": {
+        "tmdb": "603",
+        "type": "movie",
+        "title": "Matrix"
+      }
     },
     {
       "id": "flixitv",
@@ -130,7 +162,12 @@
       "formats": [
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=flixitv-stream.eu&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=flixitv-stream.eu&sz=128",
+      "testCase": {
+        "tmdb": "603",
+        "type": "movie",
+        "title": "Matrix"
+      }
     },
     {
       "id": "serienstream",
@@ -148,7 +185,14 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=serienstream.to&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=serienstream.to&sz=128",
+      "testCase": {
+        "tmdb": "1396",
+        "type": "tv",
+        "season": 1,
+        "episode": 1,
+        "title": "Breaking Bad"
+      }
     },
     {
       "id": "aniworld",
@@ -167,7 +211,14 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=aniworld.to&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=aniworld.to&sz=128",
+      "testCase": {
+        "tmdb": "1429",
+        "type": "tv",
+        "season": 1,
+        "episode": 1,
+        "title": "Attack on Titan"
+      }
     },
     {
       "id": "dmax",
@@ -185,7 +236,14 @@
       "formats": [
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=dmax.de&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=dmax.de&sz=128",
+      "testCase": {
+        "tmdb": "290135",
+        "type": "tv",
+        "season": 1,
+        "episode": 1,
+        "title": "Steel Buddies: Projekt Panther"
+      }
     },
     {
       "id": "tele5",
@@ -203,7 +261,14 @@
       "formats": [
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=tele5.de&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=tele5.de&sz=128",
+      "testCase": {
+        "tmdb": "4629",
+        "type": "tv",
+        "season": 2,
+        "episode": 15,
+        "title": "Stargate SG-1"
+      }
     },
     {
       "id": "tlc",
@@ -221,7 +286,14 @@
       "formats": [
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=tlc.de&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=tlc.de&sz=128",
+      "testCase": {
+        "tmdb": "288712",
+        "type": "tv",
+        "season": 1,
+        "episode": 13,
+        "title": "Gordon Ramsay's Secret Service"
+      }
     },
     {
       "id": "southpark",
@@ -239,7 +311,14 @@
       "formats": [
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=southpark.de&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=southpark.de&sz=128",
+      "testCase": {
+        "tmdb": "2190",
+        "type": "tv",
+        "season": 1,
+        "episode": 1,
+        "title": "South Park"
+      }
     },
     {
       "id": "moflix",
@@ -258,7 +337,12 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=moflix-stream.xyz&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=moflix-stream.xyz&sz=128",
+      "testCase": {
+        "tmdb": "603",
+        "type": "movie",
+        "title": "Matrix"
+      }
     },
     {
       "id": "huhuto",
@@ -277,7 +361,12 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=huhu.to&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=huhu.to&sz=128",
+      "testCase": {
+        "tmdb": "27205",
+        "type": "movie",
+        "title": "Inception"
+      }
     },
     {
       "id": "filmpalast",
@@ -296,7 +385,12 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=filmpalast.to&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=filmpalast.to&sz=128",
+      "testCase": {
+        "tmdb": "603",
+        "type": "movie",
+        "title": "Matrix"
+      }
     },
     {
       "id": "megakino",
@@ -315,7 +409,12 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=megakino21.com&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=megakino21.com&sz=128",
+      "testCase": {
+        "tmdb": "603",
+        "type": "movie",
+        "title": "Matrix"
+      }
     },
     {
       "id": "hdfilme",
@@ -352,7 +451,14 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=kinoking.cc&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=kinoking.cc&sz=128",
+      "testCase": {
+        "tmdb": "1396",
+        "type": "tv",
+        "season": 1,
+        "episode": 1,
+        "title": "Breaking Bad"
+      }
     },
     {
       "id": "kellerkino",
@@ -370,7 +476,12 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=kellerkino.com&sz=128"
+      "logo": "https://www.google.com/s2/favicons?domain=kellerkino.com&sz=128",
+      "testCase": {
+        "tmdb": "603",
+        "type": "movie",
+        "title": "Matrix"
+      }
     }
   ]
 }

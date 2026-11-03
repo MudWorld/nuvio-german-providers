@@ -31,8 +31,19 @@ for (const id of providers) {
     }
 }
 
-const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.json'), 'utf8'));
+const manifestPath = path.join(__dirname, 'manifest.json');
+const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 for (const s of manifest.scrapers) {
     if (!fs.existsSync(path.join(__dirname, s.filename))) { failed++; console.error(`FAIL manifest: ${s.filename} missing`); }
 }
+
+// each scraper's testCase (what the WatchParty apps' diagnostics run) is the first health.json case of that provider,
+// so health.json stays the one list of test titles
+const cases = JSON.parse(fs.readFileSync(path.join(__dirname, 'health.json'), 'utf8')).cases;
+for (const s of manifest.scrapers) {
+    const c = cases.find(x => x.provider === s.id);
+    if (c) s.testCase = Object.assign({ tmdb: String(c.tmdb), type: c.type }, c.type === 'tv' ? { season: c.season, episode: c.episode } : {}, { title: c.title });
+    else delete s.testCase;
+}
+fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
 process.exitCode = failed ? 1 : 0;
