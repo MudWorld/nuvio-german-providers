@@ -16,7 +16,10 @@ const HOSTS = [
 
 // Dood answers every non-browser client with a Cloudflare challenge on all of these domains, so asking only costs a
 // request, and Nuvio TV runs a plugin's requests one after the other. Unknown Dood mirrors still go through sniff().
-const BLOCKED = ['dood', 'd000d.com', 'vide0.net', 'dsvplay.com', 'dooodster.com', 'doods.pro', 'playmogo.com', 'd0000d.com', 'ds2play.com', 'doodstream.com', 'do7go.com'];
+// Since 11/2026 SuperVideo's stream server sends non-browser players to an ad redirect instead of the playlist, and
+// MixDrop only hands out the file URL after a reCAPTCHA, so neither can ever play; asking them only costs time.
+const BLOCKED = ['dood', 'd000d.com', 'vide0.net', 'dsvplay.com', 'dooodster.com', 'doods.pro', 'playmogo.com', 'd0000d.com', 'ds2play.com', 'doodstream.com', 'do7go.com',
+    'supervideo', 'mixdrop', 'mixdrp', 'mxdrop', 'm1xdrop.net', 'miixdrop.net', 'mdy48tn97.com', 'md3b0j6hj.com'];
 
 const hostOf = url => (url.match(/^https?:\/\/(?:www\.)?([^/:?#]+)/i) || [])[1] || '';
 const listed = (host, names) => names.some(n => host === n || (!n.includes('.') && host.includes(n)));

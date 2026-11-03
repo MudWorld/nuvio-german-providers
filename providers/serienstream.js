@@ -377,7 +377,27 @@ var HOSTS = [
   [vidoza, ["vidoza.net", "videzz.net"]],
   [streamtape, ["streamtape", "watchadsontape.com", "shavetape.cash"]]
 ];
-var BLOCKED = ["dood", "d000d.com", "vide0.net", "dsvplay.com", "dooodster.com", "doods.pro", "playmogo.com", "d0000d.com", "ds2play.com", "doodstream.com", "do7go.com"];
+var BLOCKED = [
+  "dood",
+  "d000d.com",
+  "vide0.net",
+  "dsvplay.com",
+  "dooodster.com",
+  "doods.pro",
+  "playmogo.com",
+  "d0000d.com",
+  "ds2play.com",
+  "doodstream.com",
+  "do7go.com",
+  "supervideo",
+  "mixdrop",
+  "mixdrp",
+  "mxdrop",
+  "m1xdrop.net",
+  "miixdrop.net",
+  "mdy48tn97.com",
+  "md3b0j6hj.com"
+];
 var hostOf = (url) => (url.match(/^https?:\/\/(?:www\.)?([^/:?#]+)/i) || [])[1] || "";
 var listed = (host, names) => names.some((n) => host === n || !n.includes(".") && host.includes(n));
 function decoderFor(url) {
