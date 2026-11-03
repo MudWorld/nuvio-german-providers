@@ -22,20 +22,37 @@ var __async = (__this, __arguments, generator) => {
 // shared/http.js
 var UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
 var DEADLINE_MS = 25e3;
+var REQUEST_TIMEOUT_MS = 15e3;
+var GRACE_MS = 5e3;
 var running = 0;
 var idle = [];
 var deadline = Infinity;
+var later = (fn, ms) => typeof setTimeout === "function" ? setTimeout(fn, ms) : null;
+var cancel = (t) => {
+  if (t !== null && typeof clearTimeout === "function") clearTimeout(t);
+};
 function send(url, opts) {
   if (Date.now() > deadline) return Promise.reject(new Error(`deadline reached, skipped ${url}`));
   running++;
   const done = () => {
     if (--running === 0) idle.splice(0).forEach((resolve) => resolve());
   };
-  return fetch(url, opts).then((res) => {
+  const req = fetch(url, opts).then((res) => {
     done();
     return res;
   }, (err) => {
     done();
+    throw err;
+  });
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = later(() => reject(new Error(`timeout ${url}`)), REQUEST_TIMEOUT_MS);
+  });
+  return Promise.race([req, timeout]).then((res) => {
+    cancel(timer);
+    return res;
+  }, (err) => {
+    cancel(timer);
     throw err;
   });
 }
@@ -74,7 +91,14 @@ function provider(getStreams2) {
         } catch (e) {
           console.error(e.message);
         }
-        if (running) yield new Promise((resolve) => idle.push(resolve));
+        if (running) {
+          let timer;
+          yield new Promise((resolve) => {
+            idle.push(resolve);
+            timer = later(resolve, Math.max(0, deadline + GRACE_MS - Date.now()));
+          });
+          cancel(timer);
+        }
         const rank = (lang) => lang === "Deutsch" ? 0 : /dt\. UT|OmU/.test(lang) ? 1 : 2;
         return streams.map(decorate).map((d, i) => [rank(d.lang), i, d.stream]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map((d) => d[2]);
       });

@@ -6,13 +6,25 @@ export const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
 // Nuvio TV's fetch blocks, so a plugin's requests run one after the other and cannot be aborted, and it runs ten
 // plugins at a time: a slow one holds a slot the others wait for. The budget is what keeps that short.
 const DEADLINE_MS = 25000;
+// A host that accepts the connection and never answers (moflix.rpmplay.xyz) used to hold getStreams until Nuvio's own
+// 60 s timeout, which throws away every stream the other hosts had found. So a caller stops waiting for one request
+// after REQUEST_TIMEOUT_MS, and getStreams answers at the latest GRACE_MS after the deadline even if one is still open:
+// Nuvio closes the runtime at 60 s regardless, so answering at 30 s with what was found costs nothing.
+const REQUEST_TIMEOUT_MS = 15000;
+const GRACE_MS = 5000;
 let running = 0, idle = [], deadline = Infinity;
+// a runtime without timers just keeps the old behaviour (wait for every request)
+const later = (fn, ms) => (typeof setTimeout === 'function' ? setTimeout(fn, ms) : null);
+const cancel = t => { if (t !== null && typeof clearTimeout === 'function') clearTimeout(t); };
 
 export function send(url, opts) {
     if (Date.now() > deadline) return Promise.reject(new Error(`deadline reached, skipped ${url}`));
     running++;
     const done = () => { if (--running === 0) idle.splice(0).forEach(resolve => resolve()); };
-    return fetch(url, opts).then(res => { done(); return res; }, err => { done(); throw err; });
+    const req = fetch(url, opts).then(res => { done(); return res; }, err => { done(); throw err; });
+    let timer;
+    const timeout = new Promise((_, reject) => { timer = later(() => reject(new Error(`timeout ${url}`)), REQUEST_TIMEOUT_MS); });
+    return Promise.race([req, timeout]).then(res => { cancel(timer); return res; }, err => { cancel(timer); throw err; });
 }
 
 // Nuvio mobile/desktop show only `name` and `quality` (not `title`), Nuvio TV shows `name - quality` plus `title`,
@@ -52,7 +64,14 @@ export function provider(getStreams) {
             } catch (e) {
                 console.error(e.message);
             }
-            if (running) await new Promise(resolve => idle.push(resolve));
+            if (running) {
+                let timer;
+                await new Promise(resolve => {
+                    idle.push(resolve);
+                    timer = later(resolve, Math.max(0, deadline + GRACE_MS - Date.now()));
+                });
+                cancel(timer);
+            }
             // German dub first, then German subtitles, then the rest; within a group the provider's own order stays
             const rank = lang => (lang === 'Deutsch' ? 0 : /dt\. UT|OmU/.test(lang) ? 1 : 2);
             return streams.map(decorate).map((d, i) => [rank(d.lang), i, d.stream]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(d => d[2]);

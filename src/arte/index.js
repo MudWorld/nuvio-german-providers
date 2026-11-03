@@ -22,7 +22,10 @@ async function zoneItems(zone, query, maxPages) {
 
 async function getStreams(tmdbId, mediaType, season, episode) {
     try {
-        const meta = await getMeta(tmdbId, mediaType);
+        let meta = await getMeta(tmdbId, mediaType);
+        // TMDB's "Bron/Broen" or "Die Brücke - Transit in den Tod" is just "Bron" on Arte, so each part counts as a title too
+        const parts = [].concat(...meta.titles.map(t => t.split(/ ?\/ ?| [-–:] |: /))).map(p => p.trim()).filter(p => p.length > 3);
+        meta = Object.assign({}, meta, { titles: meta.titles.concat(parts).filter((t, i, a) => a.indexOf(t) === i) });
         const isTv = mediaType === 'tv';
         let hit;
         for (const q of meta.titles) {

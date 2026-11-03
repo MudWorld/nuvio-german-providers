@@ -22,20 +22,37 @@ var __async = (__this, __arguments, generator) => {
 // shared/http.js
 var UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
 var DEADLINE_MS = 25e3;
+var REQUEST_TIMEOUT_MS = 15e3;
+var GRACE_MS = 5e3;
 var running = 0;
 var idle = [];
 var deadline = Infinity;
+var later = (fn, ms) => typeof setTimeout === "function" ? setTimeout(fn, ms) : null;
+var cancel = (t) => {
+  if (t !== null && typeof clearTimeout === "function") clearTimeout(t);
+};
 function send(url, opts) {
   if (Date.now() > deadline) return Promise.reject(new Error(`deadline reached, skipped ${url}`));
   running++;
   const done = () => {
     if (--running === 0) idle.splice(0).forEach((resolve2) => resolve2());
   };
-  return fetch(url, opts).then((res) => {
+  const req = fetch(url, opts).then((res) => {
     done();
     return res;
   }, (err) => {
     done();
+    throw err;
+  });
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = later(() => reject(new Error(`timeout ${url}`)), REQUEST_TIMEOUT_MS);
+  });
+  return Promise.race([req, timeout]).then((res) => {
+    cancel(timer);
+    return res;
+  }, (err) => {
+    cancel(timer);
     throw err;
   });
 }
@@ -74,7 +91,14 @@ function provider(getStreams2) {
         } catch (e) {
           console.error(e.message);
         }
-        if (running) yield new Promise((resolve2) => idle.push(resolve2));
+        if (running) {
+          let timer;
+          yield new Promise((resolve2) => {
+            idle.push(resolve2);
+            timer = later(resolve2, Math.max(0, deadline + GRACE_MS - Date.now()));
+          });
+          cancel(timer);
+        }
         const rank = (lang) => lang === "Deutsch" ? 0 : /dt\. UT|OmU/.test(lang) ? 1 : 2;
         return streams.map(decorate).map((d, i) => [rank(d.lang), i, d.stream]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map((d) => d[2]);
       });
@@ -104,31 +128,6 @@ var postForm = (url, form, opts = {}) => getText(url, Object.assign({}, opts, {
   body: Object.keys(form).map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(form[k])).join("&"),
   headers: Object.assign({ "Content-Type": "application/x-www-form-urlencoded" }, opts.headers)
 }));
-
-// shared/tmdb.js
-function getMeta(tmdbId, mediaType) {
-  return __async(this, null, function* () {
-    const type = mediaType === "tv" ? "tv" : "movie";
-    const d = yield getJson(`https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${globalThis.TMDB_API_KEY}&language=de-DE&append_to_response=external_ids,translations,alternative_titles`);
-    const tr = (d.translations || {}).translations || [];
-    const en = tr.find((t) => t.iso_639_1 === "en" && t.iso_3166_1 === "US") || tr.find((t) => t.iso_639_1 === "en");
-    const alts = ((d.alternative_titles || {}).titles || (d.alternative_titles || {}).results || []).filter((a) => a.iso_3166_1 === "DE" || a.iso_3166_1 === "AT").map((a) => a.title);
-    const title = d.title || d.name;
-    const originalTitle = d.original_title || d.original_name;
-    const englishTitle = en && (en.data.title || en.data.name);
-    const date = d.release_date || d.first_air_date || "";
-    return {
-      tmdbId: String(tmdbId),
-      type,
-      title,
-      originalTitle,
-      englishTitle,
-      year: date ? Number(date.slice(0, 4)) : null,
-      imdbId: (d.external_ids || {}).imdb_id || d.imdb_id || null,
-      titles: [title, originalTitle, englishTitle].concat(alts).filter((t, i, a) => t && a.indexOf(t) === i)
-    };
-  });
-}
 
 // shared/extractors/util.js
 var origin = (url) => url.match(/^https?:\/\/[^/]+/)[0];
@@ -373,16 +372,10 @@ function resolveEmbed(url, referer) {
 // src/huhuto/index.js
 var BASE = "https://huhu.to";
 var LANG = { de: "Deutsch", en: "Englisch", fr: "Franz\xF6sisch", es: "Spanisch", ja: "Japanisch", jp: "Japanisch" };
-function sources(meta, season, episode) {
+function sources(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
-    const body = { language: "de", region: "DE", clientVersion: "3.1.0", type: meta.type === "tv" ? "series" : "movie", ids: { tmdb_id: meta.tmdbId, imdb_id: meta.imdbId }, name: meta.title };
-    if (meta.type === "tv") body.episode = { season, episode };
-    const res = yield request(`${BASE}/mediaurl-source.json`, {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json; charset=utf-8", "User-Agent": "MediaUrl/2" }
-    });
-    return res.json();
+    const id = mediaType === "tv" ? `series/tmdb:${tmdbId}:${season}:${episode}` : `video/tmdb:${tmdbId}`;
+    return (yield getJson(`${BASE}/vod/source/${id}.json?language=de&region=DE`)).sources || [];
   });
 }
 function resolve(src) {
@@ -391,9 +384,9 @@ function resolve(src) {
     if (url.includes("huhu.to/")) url = (yield request(url)).url;
     return (yield resolveEmbed(url, `${BASE}/`)).map((s) => ({
       name: "Huhu",
-      title: `${s.host} \xB7 ${(src.languages || ["de"]).map((l) => LANG[l] || l.toUpperCase()).join("/")}${src.tag ? " \xB7 " + src.tag : ""}`,
+      title: `${s.host} \xB7 ${(src.languages || ["de"]).map((l) => LANG[l] || l.toUpperCase()).join("/")}`,
       url: s.url,
-      quality: /\d/.test(s.quality) ? s.quality : ((src.tag || "").match(/\d{3,4}p/) || ["auto"])[0],
+      quality: /\d/.test(s.quality) ? s.quality : /^\d{3,4}p$/.test(src.quality) ? src.quality : "auto",
       headers: s.headers
     }));
   });
@@ -401,9 +394,8 @@ function resolve(src) {
 function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
     try {
-      const meta = yield getMeta(tmdbId, mediaType);
       const german = (s) => (s.languages || ["de"]).includes("de") ? 0 : 1;
-      const list = (yield sources(meta, season, episode)).filter((s) => s.type === "url" && s.url).sort((a, b) => german(a) - german(b));
+      const list = (yield sources(tmdbId, mediaType, season, episode)).filter((s) => s.url).sort((a, b) => german(a) - german(b));
       return [].concat(...yield Promise.all(list.map((s) => resolve(s).catch(() => []))));
     } catch (e) {
       console.error(`[Huhu] ${e.message}`);
