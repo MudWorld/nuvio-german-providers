@@ -1,29 +1,182 @@
 {
-  "_comment": "Test titles for health.js: one or two per provider that the site actually offers. Broadcasters (DMAX, TLC, TELE 5, PlutoTV, Arte) rotate their catalogue, so when only those fail, first check whether the title is still online and swap it.",
+  "_comment": "Test titles for health.js: one or two per provider that the site actually offers. Broadcasters (DMAX, TLC, TELE 5, PlutoTV, Arte) rotate their catalogue, so when only those fail, first check whether the title is still online and swap it. Providers with \"datacenter\": false block data-centre IPs (tested from the server they always fail), so health.js --datacenter skips them.",
   "cases": [
-    { "provider": "megakino", "tmdb": 603, "type": "movie", "title": "Matrix" },
-    { "provider": "kellerkino", "tmdb": 603, "type": "movie", "title": "Matrix" },
-    { "provider": "filmpalast", "tmdb": 603, "type": "movie", "title": "Matrix" },
-    { "provider": "filmo", "tmdb": 603, "type": "movie", "title": "Matrix" },
-    { "provider": "flixitv", "tmdb": 603, "type": "movie", "title": "Matrix" },
-    { "provider": "filmfrei24", "tmdb": 603, "type": "movie", "title": "Matrix" },
-    { "provider": "filmfrei24", "tmdb": 97546, "type": "tv", "season": 1, "episode": 1, "title": "Ted Lasso" },
-    { "provider": "huhuto", "tmdb": 27205, "type": "movie", "title": "Inception" },
-    { "provider": "huhuto", "tmdb": 1396, "type": "tv", "season": 1, "episode": 1, "title": "Breaking Bad" },
-    { "provider": "moflix", "tmdb": 603, "type": "movie", "title": "Matrix" },
-    { "provider": "moflix", "tmdb": 1396, "type": "tv", "season": 1, "episode": 1, "title": "Breaking Bad" },
-    { "provider": "kinoking", "tmdb": 1396, "type": "tv", "season": 1, "episode": 1, "title": "Breaking Bad" },
-    { "provider": "serienstream", "tmdb": 1396, "type": "tv", "season": 1, "episode": 1, "title": "Breaking Bad" },
-    { "provider": "aniworld", "tmdb": 1429, "type": "tv", "season": 1, "episode": 1, "title": "Attack on Titan" },
-    { "provider": "southpark", "tmdb": 2190, "type": "tv", "season": 1, "episode": 1, "title": "South Park" },
-    { "provider": "netzkino", "tmdb": 43479, "type": "movie", "title": "Off Limits – Wir sind das Gesetz" },
-    { "provider": "ard", "tmdb": 66980, "type": "tv", "season": 1, "episode": 1, "title": "Babylon Berlin" },
-    { "provider": "arte", "tmdb": 2649, "type": "movie", "title": "The Game" },
-    { "provider": "arte", "tmdb": 45016, "type": "tv", "season": 1, "episode": 1, "title": "Die Brücke" },
-    { "provider": "dmax", "tmdb": 290135, "type": "tv", "season": 1, "episode": 1, "title": "Steel Buddies: Projekt Panther" },
-    { "provider": "tlc", "tmdb": 288712, "type": "tv", "season": 1, "episode": 13, "title": "Gordon Ramsay's Secret Service" },
-    { "provider": "tele5", "tmdb": 4629, "type": "tv", "season": 2, "episode": 15, "title": "Stargate SG-1" },
-    { "provider": "plutotv", "tmdb": 12253, "type": "movie", "title": "Biker Boyz" },
-    { "provider": "plutotv", "tmdb": 67198, "type": "tv", "season": 1, "episode": 1, "title": "Star Trek: Discovery" }
+    {
+      "provider": "megakino",
+      "tmdb": 603,
+      "type": "movie",
+      "title": "Matrix"
+    },
+    {
+      "provider": "kellerkino",
+      "tmdb": 603,
+      "type": "movie",
+      "title": "Matrix"
+    },
+    {
+      "provider": "filmpalast",
+      "tmdb": 603,
+      "type": "movie",
+      "title": "Matrix"
+    },
+    {
+      "provider": "filmo",
+      "tmdb": 603,
+      "type": "movie",
+      "title": "Matrix"
+    },
+    {
+      "provider": "flixitv",
+      "tmdb": 603,
+      "type": "movie",
+      "title": "Matrix"
+    },
+    {
+      "provider": "filmfrei24",
+      "tmdb": 603,
+      "type": "movie",
+      "title": "Matrix"
+    },
+    {
+      "provider": "filmfrei24",
+      "tmdb": 97546,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "Ted Lasso"
+    },
+    {
+      "provider": "huhuto",
+      "tmdb": 27205,
+      "type": "movie",
+      "title": "Inception"
+    },
+    {
+      "provider": "huhuto",
+      "tmdb": 1396,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "Breaking Bad"
+    },
+    {
+      "provider": "moflix",
+      "tmdb": 603,
+      "type": "movie",
+      "title": "Matrix"
+    },
+    {
+      "provider": "moflix",
+      "tmdb": 1396,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "Breaking Bad"
+    },
+    {
+      "provider": "kinoking",
+      "tmdb": 1396,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "Breaking Bad"
+    },
+    {
+      "provider": "serienstream",
+      "tmdb": 1396,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "Breaking Bad",
+      "datacenter": false
+    },
+    {
+      "provider": "aniworld",
+      "tmdb": 1429,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "Attack on Titan"
+    },
+    {
+      "provider": "southpark",
+      "tmdb": 2190,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "South Park"
+    },
+    {
+      "provider": "netzkino",
+      "tmdb": 43479,
+      "type": "movie",
+      "title": "Off Limits – Wir sind das Gesetz",
+      "datacenter": false
+    },
+    {
+      "provider": "ard",
+      "tmdb": 66980,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "Babylon Berlin"
+    },
+    {
+      "provider": "arte",
+      "tmdb": 2649,
+      "type": "movie",
+      "title": "The Game"
+    },
+    {
+      "provider": "arte",
+      "tmdb": 45016,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "Die Brücke"
+    },
+    {
+      "provider": "dmax",
+      "tmdb": 290135,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "Steel Buddies: Projekt Panther",
+      "datacenter": false
+    },
+    {
+      "provider": "tlc",
+      "tmdb": 288712,
+      "type": "tv",
+      "season": 1,
+      "episode": 13,
+      "title": "Gordon Ramsay's Secret Service",
+      "datacenter": false
+    },
+    {
+      "provider": "tele5",
+      "tmdb": 4629,
+      "type": "tv",
+      "season": 2,
+      "episode": 15,
+      "title": "Stargate SG-1",
+      "datacenter": false
+    },
+    {
+      "provider": "plutotv",
+      "tmdb": 12253,
+      "type": "movie",
+      "title": "Biker Boyz",
+      "datacenter": false
+    },
+    {
+      "provider": "plutotv",
+      "tmdb": 67198,
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "title": "Star Trek: Discovery",
+      "datacenter": false
+    }
   ]
 }

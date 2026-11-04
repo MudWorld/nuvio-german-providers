@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-// node health.js [--json out.json] [provider...]   runs test.js for every case in health.json (four at a time) and
+// node health.js [--json out.json] [--datacenter] [provider...]   runs test.js for every case in health.json (four at a time) and
 // prints one line per case; with --json also writes {checkedAt, country, results:[{provider, title, ok, streams, playable, note}]}.
 // A case is ok when at least one returned stream probes as PLAYABLE. Needs TMDB_API_KEY or .tmdb_key like test.js.
+// --datacenter (the nightly run on the server) skips cases marked "datacenter": false: those sites block data-centre IPs.
 const { execFile } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -9,9 +10,11 @@ const path = require('path');
 const args = process.argv.slice(2);
 const jsonAt = args.indexOf('--json');
 const out = jsonAt >= 0 ? args.splice(jsonAt, 2)[1] : null;
-const only = args;
+const datacenter = args.includes('--datacenter');
+const only = args.filter(a => a !== '--datacenter');
 const cases = JSON.parse(fs.readFileSync(path.join(__dirname, 'health.json'), 'utf8')).cases
-    .filter(c => !only.length || only.includes(c.provider));
+    .filter(c => !only.length || only.includes(c.provider))
+    .filter(c => !(datacenter && c.datacenter === false));
 
 function run(c) {
     const argv = [path.join(__dirname, 'test.js'), c.provider, String(c.tmdb), c.type].concat(c.type === 'tv' ? [String(c.season), String(c.episode)] : []);
